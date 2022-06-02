@@ -1,4 +1,4 @@
-.clock {
+.timer {
   width: 100vw;
   height: 100vh;
   display: flex;
@@ -9,4 +9,10 @@
   font-family: "Orbitron", sans-serif;
   font-size: 6rem;
 }
-
+.timer input{
+  color: #00f001;
+  font-family: "Orbitron", sans-serif;
+  background-color: black;
+  font-size: 6rem;
+  width: 12rem;
+}
