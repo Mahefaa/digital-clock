@@ -10,7 +10,7 @@ function App() {
   return (
     <div>
       <button onClick={()=>setisTimer(!isTimer)} style={{backgroundColor:"lightslategray",color:"#00f005",}}>toggle</button>
-      {!isTimer?<TimerClassComponent hour={0} minute={0} second={10}/> : <ClockClassComponent date={date}/>}
+      {<ClockClassComponent date={date} isTimer={isTimer}/>}
     </div>
   );
 }

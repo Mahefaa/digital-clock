@@ -6,9 +6,8 @@ import "./Clock.css";
 export class ClockClassComponent extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { date: this.props.date, timer: null };
+    this.state = { date: this.props.date, timer: null, isTimer:this.props.isTimer};
   }
-
   componentDidMount() {
     this.setState({
       timer: setInterval(() => this.setState({ date: new Date() }), 1000),
