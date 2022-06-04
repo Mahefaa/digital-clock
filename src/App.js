@@ -5,12 +5,12 @@ import { TimerClassComponent } from "./Timer/Timer";
 
 
 function App() {
-  const [isTimer,setisTimer]=useState(true);
+  const [isTimer,setisTimer]=useState(false);
   let date = new Date();
   return (
     <div>
       <button onClick={()=>setisTimer(!isTimer)} style={{backgroundColor:"lightslategray",color:"#00f005",}}>toggle</button>
-      {<ClockClassComponent date={date} isTimer={isTimer}/>}
+      {isTimer?<TimerClassComponent date={date}/> : <ClockClassComponent date={date}/>}
     </div>
   );
 }
