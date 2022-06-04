@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "./App.css";
 import { Clock, ClockClassComponent } from "./Clock/Clock";
-import { TimerClassComponent } from "./Timer/Timer";
+import { Timer, TimerClassComponent } from "./Timer/Timer";
 
 
 function App() {
@@ -10,7 +10,9 @@ function App() {
   return (
     <div>
       <button onClick={()=>setisTimer(!isTimer)} style={{backgroundColor:"lightslategray",color:"#00f005",}}>toggle</button>
-      {isTimer?<TimerClassComponent date={date}/> : <ClockClassComponent date={date}/>}
+      {//isTimer?<TimerClassComponent date={date}/> : <ClockClassComponent date={date}/>
+      isTimer?<Timer date={date}/> : <Clock date={date}/>
+      }
     </div>
   );
 }
