@@ -40,12 +40,14 @@ export class TimerClassComponent extends React.Component {
     let input=null;
     return (
       <>
-      <button onClick={()=>{
-      this.state.start? this.decrement(this.state.hour,this.state.minute,this.state.second) : clearInterval(this.timer);
-      this.setState((prevState)=>({start:!prevState.start}));
-      }}
-      >{!this.state.start? "stop" : "start"}</button>
         <div className="timer">
+          <button onClick={()=>{
+            this.state.start? this.decrement(this.state.hour,this.state.minute,this.state.second) : clearInterval(this.timer);
+            this.setState((prevState)=>({start:!prevState.start}));
+            }}
+            >
+              {!this.state.start? "stop" : "start"}
+          </button>
           <span>
             <input ref={(inputHour)=>this.hour=inputHour} type="text" value={!this.state.start ? this.padStart(this.state.hour): this.state.hour} onChange={(e)=>{
               input = e.target.value.replace(/\D/g,"").slice(0,2);
@@ -136,7 +138,7 @@ export function Timer(props) {
         </button>
 
         <span>
-          <input type="text" value={willPadStart ? padStart(hour) : hour} onChange={(e)=>{
+          <input type="text" value={!start ? padStart(hour) : hour} onChange={(e)=>{
             input = e.target.value.replace(/\D/g,"").slice(0,2);
            setHour(input>=0 && input<24? input : 23);
             }}
@@ -146,7 +148,7 @@ export function Timer(props) {
           />:
         </span>
 
-        <span><input type={"text"} value={willPadStart ? padStart(minute) : minute}
+        <span><input type={"text"} value={!start ? padStart(minute) : minute}
         onChange={(e)=>{
           input = e.target.value.replace(/\D/g,"").slice(0,2);
           setMinute((input<60 && input>=0)? input : 59);
@@ -156,7 +158,7 @@ export function Timer(props) {
         }}
         ></input>:</span>
 
-        <span><input type={"text"} value={willPadStart ? padStart(second) : second}
+        <span><input type={"text"} value={!start ? padStart(second) : second}
         onChange={(e)=>{
           input = e.target.value.replace(/\D/g,"").slice(0,2);
           setSecond((input<60 && input>=0)? input : 59);

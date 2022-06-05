@@ -10,8 +10,8 @@ function App() {
   return (
     <div>
       <button onClick={()=>setisTimer(!isTimer)} style={{backgroundColor:"lightslategray",color:"#00f005",}}>toggle</button>
-      {isTimer?<TimerClassComponent date={date}/> : <ClockClassComponent date={date}/>
-      //isTimer?<Timer date={date}/> : <Clock date={date}/>
+      {//isTimer?<TimerClassComponent date={date}/> : <ClockClassComponent date={date}/>
+      isTimer?<Timer date={date}/> : <Clock date={date}/>
       }
     </div>
   );
