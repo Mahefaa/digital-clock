@@ -5,7 +5,7 @@ import "./Timer.css";
 export class TimerClassComponent extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {hour:this.padStart(this.props.date.getHours()), minute:this.padStart(this.props.date.getMinutes()), second:this.padStart(this.props.date.getSeconds()),timer:null, start:true}}
+    this.state = {hour:this.padStart(this.props.date.getHours()), minute:this.padStart(this.props.date.getMinutes()), second:this.padStart(this.props.date.getSeconds()),timer:null, start:false}}
   padStart=digit=>digit.toString().padStart(2,"0");
 
   //decrement hours,minutes,seconds following watch's rules
@@ -15,7 +15,7 @@ export class TimerClassComponent extends React.Component {
     this.timer=setInterval(()=>{
       if(hourValue===0 && minuteValue===0 && secondValue ===0){
         clearInterval(this.timer);
-        this.setState({start:true})
+        this.setState({start:false})
         return alert("Time's up !!");
       }
       secondValue--;
@@ -42,14 +42,14 @@ export class TimerClassComponent extends React.Component {
       <>
         <div className="timer">
           <button onClick={()=>{
-            this.state.start? this.decrement(this.state.hour,this.state.minute,this.state.second) : clearInterval(this.timer);
+            this.state.start? clearInterval(this.timer):this.decrement(this.state.hour,this.state.minute,this.state.second);
             this.setState((prevState)=>({start:!prevState.start}));
             }}
             >
-              {!this.state.start? "stop" : "start"}
+              {!this.state.start? "start": "stop" }
           </button>
           <span>
-            <input ref={(inputHour)=>this.hour=inputHour} type="text" value={!this.state.start ? this.padStart(this.state.hour): this.state.hour} onChange={(e)=>{
+            <input ref={(inputHour)=>this.hour=inputHour} type="text" value={this.state.start ? this.padStart(this.state.hour): this.state.hour} onChange={(e)=>{
               input = e.target.value.replace(/\D/g,"").slice(0,2);
               input = input>=0 && input<24? input : 23;
               this.setState({hour:input});
@@ -60,7 +60,7 @@ export class TimerClassComponent extends React.Component {
             />:
           </span>
 
-          <span><input type={"text"} value={!this.state.start ? this.padStart(this.state.minute) : this.state.minute}
+          <span><input type={"text"} value={this.state.start ? this.padStart(this.state.minute) : this.state.minute}
           onChange={(e)=>{
             input = e.target.value.replace(/\D/g,"").slice(0,2);
             input= (input<60 && input>=0)? input : 59;
@@ -71,7 +71,7 @@ export class TimerClassComponent extends React.Component {
           }}
           ></input>:</span>
 
-          {<span><input type={"text"} value={!this.state.start ? this.padStart(this.state.second) : this.state.second}
+          {<span><input type={"text"} value={this.state.start ? this.padStart(this.state.second) : this.state.second}
           onChange={(e)=>{
             input = e.target.value.replace(/\D/g,"").slice(0,2);
             input = (input<60 && input>=0)? input : 59;
@@ -95,7 +95,7 @@ export function Timer(props) {
   const [hour,setHour]=useState(padStart(date.getHours()));
   const [minute,setMinute]=useState(padStart(date.getMinutes()));
   const [second,setSecond]=useState(padStart(date.getSeconds()));
-  const [start,setStart]=useState(true);
+  const [start,setStart]=useState(false);
 
   function padStart(digit) {
     return digit.toString().padStart(2, "0");
@@ -128,16 +128,15 @@ export function Timer(props) {
     <>
       <div className="timer">
         <button onClick={()=>{
-          start? decrement(hour,minute,second) : clearInterval(timerId);
+          start?  clearInterval(timerId):decrement(hour,minute,second);
           setStart(!start);
-          setWPS(true);
           }}
           >
-          {!start? "stop" : "start"}
+          {start? "stop" : "start"}
         </button>
 
         <span>
-          <input type="text" value={!start ? padStart(hour) : hour} onChange={(e)=>{
+          <input type="text" value={start ? padStart(hour) : hour} onChange={(e)=>{
             input = e.target.value.replace(/\D/g,"").slice(0,2);
            setHour(input>=0 && input<24? input : 23);
             }}
@@ -147,7 +146,7 @@ export function Timer(props) {
           />:
         </span>
 
-        <span><input type={"text"} value={!start ? padStart(minute) : minute}
+        <span><input type={"text"} value={start ? padStart(minute) : minute}
         onChange={(e)=>{
           input = e.target.value.replace(/\D/g,"").slice(0,2);
           setMinute((input<60 && input>=0)? input : 59);
@@ -157,7 +156,7 @@ export function Timer(props) {
         }}
         ></input>:</span>
 
-        <span><input type={"text"} value={!start ? padStart(second) : second}
+        <span><input type={"text"} value={start ? padStart(second) : second}
         onChange={(e)=>{
           input = e.target.value.replace(/\D/g,"").slice(0,2);
           setSecond((input<60 && input>=0)? input : 59);
