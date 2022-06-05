@@ -96,7 +96,6 @@ export function Timer(props) {
   const [minute,setMinute]=useState(padStart(date.getMinutes()));
   const [second,setSecond]=useState(padStart(date.getSeconds()));
   const [start,setStart]=useState(true);
-  const [willPadStart,setWPS]=useState(false);
 
   function padStart(digit) {
     return digit.toString().padStart(2, "0");
