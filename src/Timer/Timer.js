@@ -6,7 +6,6 @@ export class TimerClassComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {hour:this.padStart(this.props.date.getHours()), minute:this.padStart(this.props.date.getMinutes()), second:this.padStart(this.props.date.getSeconds()),timer:null, start:true}}
-  willPadStart=false;
   padStart=digit=>digit.toString().padStart(2,"0");
 
   //decrement hours,minutes,seconds following watch's rules
@@ -44,12 +43,11 @@ export class TimerClassComponent extends React.Component {
       <button onClick={()=>{
       this.state.start? this.decrement(this.state.hour,this.state.minute,this.state.second) : clearInterval(this.timer);
       this.setState((prevState)=>({start:!prevState.start}));
-      this.willPadStart=true;
       }}
       >{!this.state.start? "stop" : "start"}</button>
         <div className="timer">
           <span>
-            <input ref={(inputHour)=>this.hour=inputHour} type="text" value={this.willPadStart ? this.padStart(this.state.hour): this.state.hour} onChange={(e)=>{
+            <input ref={(inputHour)=>this.hour=inputHour} type="text" value={!this.state.start ? this.padStart(this.state.hour): this.state.hour} onChange={(e)=>{
               input = e.target.value.replace(/\D/g,"").slice(0,2);
               input = input>=0 && input<24? input : 23;
               this.setState({hour:input});
@@ -60,7 +58,7 @@ export class TimerClassComponent extends React.Component {
             />:
           </span>
 
-          <span><input type={"text"} value={this.willPadStart ? this.padStart(this.state.minute) : this.state.minute}
+          <span><input type={"text"} value={!this.state.start ? this.padStart(this.state.minute) : this.state.minute}
           onChange={(e)=>{
             input = e.target.value.replace(/\D/g,"").slice(0,2);
             input= (input<60 && input>=0)? input : 59;
@@ -71,7 +69,7 @@ export class TimerClassComponent extends React.Component {
           }}
           ></input>:</span>
 
-          {<span><input type={"text"} value={this.willPadStart ?this.padStart(this.state.second) : this.state.second}
+          {<span><input type={"text"} value={!this.state.start ? this.padStart(this.state.second) : this.state.second}
           onChange={(e)=>{
             input = e.target.value.replace(/\D/g,"").slice(0,2);
             input = (input<60 && input>=0)? input : 59;
