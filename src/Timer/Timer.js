@@ -71,7 +71,7 @@ export class TimerClassComponent extends React.Component {
           }}
           ></input>:</span>
 
-          {<span><input type={"text"} value={this.state.start ? this.padStart(this.state.second) : this.state.second}
+          <span><input type={"text"} value={this.state.start ? this.padStart(this.state.second) : this.state.second}
           onChange={(e)=>{
             input = e.target.value.replace(/\D/g,"").slice(0,2);
             input = (input<60 && input>=0)? input : 59;
@@ -80,7 +80,7 @@ export class TimerClassComponent extends React.Component {
           onBlur={()=>{
             this.setState((prevState)=>({second:this.padStart(prevState.second)}));
           }}
-          ></input></span>}
+          ></input></span>
         </div>
       </>
     );
@@ -90,7 +90,6 @@ export class TimerClassComponent extends React.Component {
 
 export function Timer(props) {
   const {date} = props;
-  let input=null;
   let [timerId,setTimerId]=useState(null);
   const [hour,setHour]=useState(padStart(date.getHours()));
   const [minute,setMinute]=useState(padStart(date.getMinutes()));
@@ -134,38 +133,33 @@ export function Timer(props) {
           >
           {start? "stop" : "start"}
         </button>
-
-        <span>
-          <input type="text" value={start ? padStart(hour) : hour} onChange={(e)=>{
-            input = e.target.value.replace(/\D/g,"").slice(0,2);
-           setHour(input>=0 && input<24? input : 23);
-            }}
-            onBlur={()=>{
-              setHour(padStart(hour));
-            }}
-          />:
-        </span>
-
-        <span><input type={"text"} value={start ? padStart(minute) : minute}
-        onChange={(e)=>{
-          input = e.target.value.replace(/\D/g,"").slice(0,2);
-          setMinute((input<60 && input>=0)? input : 59);
-        }}
-        onBlur={()=>{
-          setMinute(padStart(minute));
-        }}
-        ></input>:</span>
-
-        <span><input type={"text"} value={start ? padStart(second) : second}
-        onChange={(e)=>{
-          input = e.target.value.replace(/\D/g,"").slice(0,2);
-          setSecond((input<60 && input>=0)? input : 59);
-        }}
-        onBlur={()=>{
-          setSecond(padStart(second));
-        }}
-        ></input></span>
+        <Input type="text" value={[start,hour,"h"]} onChange={[handleChange,setHour]} padStart={padStart} input={null}/>:
+        <Input type="text" value={[start,minute,"m"]} onChange={[handleChange,setMinute]} padStart={padStart} input={null}/>:
+        <Input type="text" value={[start,second,"s"]} onChange={[handleChange,setSecond]} padStart={padStart} input={null}/>
       </div>
     </>
   );
 }
+function handleChange(e,input,set,type){
+  input = e.target.value.replace(/\D/g,"").slice(0,2);
+  if(type!=="h")
+    set((input<60 && input>=0)? input : 59);
+  else
+    set(input>=0 && input<24? input : 23)
+}
+
+function Input(props){
+  let {type,value,onChange,padStart,input}=props;
+  let [handleChange,set]=onChange;
+  let [start,prevValue,string]=value;
+  return(
+    <span>
+      <input type={type} value={start ? padStart(prevValue) : prevValue}
+        onChange={(e)=>handleChange(e,input,set,string)}
+        onBlur={()=>set(padStart(prevValue))}
+        />
+    </span>
+  )
+}
+
+/** */
