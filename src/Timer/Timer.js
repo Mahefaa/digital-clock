@@ -5,9 +5,39 @@ import "./Timer.css";
 export class TimerClassComponent extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {hour:this.padStart(this.props.date.getHours()), minute:this.padStart(this.props.date.getMinutes()), second:this.padStart(this.props.date.getSeconds()),timer:null, start:false}}
+    this.state = {hour:this.padStart(this.props.date.getHours()), minute:this.padStart(this.props.date.getMinutes()), second:this.padStart(this.props.date.getSeconds()),timer:null, start:false}
+  }
   padStart=digit=>digit.toString().padStart(2,"0");
 
+  handleChange=(e,input,setValue,type,state)=>{
+    input = e.target.value.replace(/\D/g,"").slice(0,2);
+    if(type!=="hour"){
+      state[type]=(input<60 && input>=0)? input : 59;
+      setValue(state);
+    }
+    else{
+      alert([state[type]]);
+      state[type]=(input>=0 && input<24)? input : 23;
+      setValue(state);
+    }
+  }
+
+  Input=(props)=>{
+    let {type,value,onChange,padStart,input,state}=props;
+    let [handleChange,setValue]=onChange;
+    let [start,prevValue,string]=value;
+    return(
+      <span>
+        <input type={type} value={start ? padStart(prevValue) : prevValue}
+          onChange={(e)=>handleChange(e,input,setValue,string,state)}
+          onBlur={()=>{
+            state[string]=padStart(state[string]);
+            setValue(state);
+          }}
+          />
+      </span>
+    )
+  }
   //decrement hours,minutes,seconds following watch's rules
   decrement=(hour,minute,second)=>{
     let [hourValue,minuteValue,secondValue]=[hour,minute,second].map((e)=>parseInt(e));
@@ -33,56 +63,20 @@ export class TimerClassComponent extends React.Component {
 
   componentDidMount(){
     //to put the focus on hour's input
-    this.hour.focus();
+    //this.hour.focus();
   }
   render() {
-    
-    let input=null;
     return (
-      <>
-        <div className="timer">
-          <button onClick={()=>{
+      <div className="timer">
+        <button onClick={()=>{
             this.state.start? clearInterval(this.timer):this.decrement(this.state.hour,this.state.minute,this.state.second);
             this.setState((prevState)=>({start:!prevState.start}));
             }}
             >
               {!this.state.start? "start": "stop" }
           </button>
-          <span>
-            <input ref={(inputHour)=>this.hour=inputHour} type="text" value={this.state.start ? this.padStart(this.state.hour): this.state.hour} onChange={(e)=>{
-              input = e.target.value.replace(/\D/g,"").slice(0,2);
-              input = input>=0 && input<24? input : 23;
-              this.setState({hour:input});
-              }}
-              onBlur={()=>{
-                this.setState((prevState)=>({hour:this.padStart(prevState.hour)}));
-              }}
-            />:
-          </span>
-
-          <span><input type={"text"} value={this.state.start ? this.padStart(this.state.minute) : this.state.minute}
-          onChange={(e)=>{
-            input = e.target.value.replace(/\D/g,"").slice(0,2);
-            input= (input<60 && input>=0)? input : 59;
-            this.setState({minute:input});
-          }}
-          onBlur={()=>{
-            this.setState((prevState)=>({minute:this.padStart(prevState.minute)}));
-          }}
-          ></input>:</span>
-
-          <span><input type={"text"} value={this.state.start ? this.padStart(this.state.second) : this.state.second}
-          onChange={(e)=>{
-            input = e.target.value.replace(/\D/g,"").slice(0,2);
-            input = (input<60 && input>=0)? input : 59;
-            this.setState({second:input});
-          }}
-          onBlur={()=>{
-            this.setState((prevState)=>({second:this.padStart(prevState.second)}));
-          }}
-          ></input></span>
-        </div>
-      </>
+        <this.Input type="text" value={[this.state.start,this.state.second,"second"]} onChange={[this.handleChange,this.setState]} padStart={this.padStart} input={null} state={this.state}/>
+      </div>
     );
   }
 }
@@ -124,42 +118,80 @@ export function Timer(props) {
   };
 
   return (
-    <>
-      <div className="timer">
-        <button onClick={()=>{
-          start?  clearInterval(timerId):decrement(hour,minute,second);
-          setStart(!start);
-          }}
-          >
-          {start? "stop" : "start"}
-        </button>
-        <Input type="text" value={[start,hour,"h"]} onChange={[handleChange,setHour]} padStart={padStart} input={null}/>:
-        <Input type="text" value={[start,minute,"m"]} onChange={[handleChange,setMinute]} padStart={padStart} input={null}/>:
-        <Input type="text" value={[start,second,"s"]} onChange={[handleChange,setSecond]} padStart={padStart} input={null}/>
-      </div>
-    </>
+    <div className="timer">
+      <button onClick={()=>{
+        start?  clearInterval(timerId):decrement(hour,minute,second);
+        setStart(!start);
+        }}
+        >
+        {start? "stop" : "start"}
+      </button>
+      <Input type="text" value={[start,hour,"h"]} onChange={[handleChange,setHour]} padStart={padStart} input={null}/>:
+      <Input type="text" value={[start,minute,"m"]} onChange={[handleChange,setMinute]} padStart={padStart} input={null}/>:
+      <Input type="text" value={[start,second,"s"]} onChange={[handleChange,setSecond]} padStart={padStart} input={null}/>
+    </div>
   );
 }
-function handleChange(e,input,set,type){
+
+function handleChange(e,input,setValue,type){
   input = e.target.value.replace(/\D/g,"").slice(0,2);
   if(type!=="h")
-    set((input<60 && input>=0)? input : 59);
+    setValue((input<60 && input>=0)? input : 59);
   else
-    set(input>=0 && input<24? input : 23)
+    setValue(input>=0 && input<24? input : 23);
 }
 
 function Input(props){
   let {type,value,onChange,padStart,input}=props;
-  let [handleChange,set]=onChange;
+  let [handleChange,setValue]=onChange;
   let [start,prevValue,string]=value;
   return(
     <span>
       <input type={type} value={start ? padStart(prevValue) : prevValue}
-        onChange={(e)=>handleChange(e,input,set,string)}
-        onBlur={()=>set(padStart(prevValue))}
+        onChange={(e)=>handleChange(e,input,setValue,string)}
+        onBlur={()=>setValue(padStart(prevValue))}
         />
     </span>
   )
 }
 
-/** */
+/*
+<div className="timer">
+          <span>
+            <input ref={(inputHour)=>this.hour=inputHour} type="text" value={this.state.start ? this.padStart(this.state.hour): this.state.hour} onChange={(e)=>{
+              input = e.target.value.replace(/\D/g,"").slice(0,2);
+              input = input>=0 && input<24? input : 23;
+              this.setState({hour:input});
+              }}
+              onBlur={()=>{
+                this.setState((prevState)=>({hour:this.padStart(prevState.hour)}));
+              }}
+            />:
+          </span>
+
+          <span><input type={"text"} value={this.state.start ? this.padStart(this.state.minute) : this.state.minute}
+          onChange={(e)=>{
+            input = e.target.value.replace(/\D/g,"").slice(0,2);
+            input= (input<60 && input>=0)? input : 59;
+            this.setState({minute:input});
+          }}
+          onBlur={()=>{
+            this.setState((prevState)=>({minute:this.padStart(prevState.minute)}));
+          }}
+          ></input>:</span>
+
+          <span><input type={"text"} value={this.state.start ? this.padStart(this.state.second) : this.state.second}
+          onChange={(e)=>{
+            input = e.target.value.replace(/\D/g,"").slice(0,2);
+            input = (input<60 && input>=0)? input : 59;
+            this.setState({second:input});
+          }}
+          onBlur={()=>{
+            this.setState((prevState)=>({second:this.padStart(prevState.second)}));
+          }}
+          ></input></span>
+        </div>
+
+        <Input type="text" value={[this.state.start,this.state.hour,"h"]} onChange={[classHandleChange,setHour]} padStart={this.padStart} input={null}/>:
+        <Input type="text" value={[this.state.start,this.state.minute,"m"]} onChange={[classHandleChange,setMinute]} padStart={this.padStart} input={null}/>:
+*/
