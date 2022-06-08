@@ -106,7 +106,7 @@ export function Timer(props) {
     setTimerId(setInterval(()=>{
       if(hourValue===0 && minuteValue === 0 && secondValue === 0){
         clearInterval(timerId);
-        setStart(!start);
+        setStart(false);
         return alert("Time's up !!");
       }
       secondValue--;
