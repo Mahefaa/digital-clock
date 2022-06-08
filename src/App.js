@@ -3,7 +3,7 @@ import "./App.css";
 import { Clock, ClockClassComponent } from "./Clock/Clock";
 import { Timer, TimerClassComponent } from "./Timer/Timer";
 
-
+//Author Mahefa Ny Anjara
 function App() {
   const [isTimer,setisTimer]=useState(false);
   return (
